@@ -452,7 +452,10 @@ func lexPostValue(l *Lexer) stateFn {
 func (l *Lexer) scanComment() bool {
   if strings.HasPrefix(l.Input[l.Pos:], "//") {
     // Comments are always terminated at EOL or EOF
-    for r := l.next(); !(isEndOfLine(r) || r == eof); r = l.next() {
+    for !isEndOfLine(l.peek()) {
+      if (l.next() == eof) {
+        break
+      }
     }
     return true
   }

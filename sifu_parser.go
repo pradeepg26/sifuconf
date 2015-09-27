@@ -19,6 +19,7 @@ func main() {
   for t := range l.Items {
     if (t.ItemType == lexer.ERROR) {
       fmt.Printf("%s%s\n", cyan(l.Input[0:l.Pos]), red(l.Input[l.Pos:]))
+      fmt.Println(t)
     }
   }
 }
