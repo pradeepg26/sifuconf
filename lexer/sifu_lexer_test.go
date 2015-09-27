@@ -221,15 +221,11 @@ func TestSingleLineList(t *testing.T) {
     t.Parallel()
     assert := assert.New(t)
 
-    l := Lex("TestSingleLineList", "list = [1234, 1234, 1234]")
+    l := Lex("TestSingleLineList", "list = [1, 2, 3, 4]")
 
     token := <-l.Items
     assert.Equal(VARIABLE, token.ItemType)
     assert.Equal("list", token.ItemValue)
-
-    token = <-l.Items
-    assert.Equal(ASSIGNMENT, token.ItemType)
-    assert.Equal("=", token.ItemValue)
 
     token = <-l.Items
     assert.Equal(ASSIGNMENT, token.ItemType)
@@ -241,15 +237,19 @@ func TestSingleLineList(t *testing.T) {
 
     token = <-l.Items
     assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("1234", token.ItemValue)
+    assert.Equal("1", token.ItemValue)
 
     token = <-l.Items
     assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("1234", token.ItemValue)
+    assert.Equal("2", token.ItemValue)
 
     token = <-l.Items
     assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("1234", token.ItemValue)
+    assert.Equal("3", token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(NUMBER, token.ItemType)
+    assert.Equal("4", token.ItemValue)
 
     token = <-l.Items
     assert.Equal(LIST_END, token.ItemType)

@@ -360,39 +360,13 @@ func lexList(l *Lexer) stateFn {
   if !l.accept("[") {
     l.errorf("Unexpected character. Expecting LIST_START")
   }
+  l.emit(LIST_START)
 
-  for r := l.peek(); r != ']'; {
-    switch r := r; {
-    case r == '"':
-      if l.scanString() {
-        l.emit(STRING)
-        // Try to accept a ','
-        if !l.accept(",") {
-          return l.errorf("List elements must be terminated by a comma ','")
-        }
-        // Scan for an optional comment
-      }
-    case r == 't' || r == 'f':
-      if l.scanBoolean() {
-        l.emit(BOOLEAN)
-        return lexPostValue
-      }
-      // Not a boolean, so fallthrough
-      fallthrough
-    case isAsciiAlpha(r):
-      return lexTypeValue
-    case r == '[':
-      return lexList
-    case unicode.IsDigit(r) || r == '.':
-      return lexNumberValue
-    default:
-      return l.errorf("Illegal character")
-    }
-  }
-  return lexPostValue
+  return lexListElement
 }
 
 func lexListElement(l *Lexer) stateFn {
+  l.consumeSpaces()
   switch r := l.next(); {
   case r == '"':
       if l.scanString() {
@@ -403,7 +377,7 @@ func lexListElement(l *Lexer) stateFn {
     case r == 't' || r == 'f':
       if l.scanBoolean() {
         l.emit(BOOLEAN)
-        return lexPostValue
+        return lexPostListElement
       }
       // Not a boolean, so fallthrough
       fallthrough
