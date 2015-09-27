@@ -1,30 +1,26 @@
 ```
 .
-├── defaults.sifu
+├── _defaults.sifu
 ├── prod
-│   ├── prod.defaults.sifu
-│   └── deployments
-│       ├── prod.autodesk.sifu
-│       ├── prod.bskyb.sifu
-│       └── prod.skypec.sifu
+│   ├── _prod.defaults.sifu
+│   ├── prod.autodesk.sifu
+│   ├── prod.microsoft.sifu
+│   └── prod.skype.sifu
 ├── stage
-│   ├── stage.defaults.sifu
-│   └── deployments
-│       ├── stage.autodesk.sifu
-│       ├── stage.bskyb.sifu
-│       └── stage.skypec.sifu
+│   ├── _stage.defaults.sifu
+│   ├── stage.autodesk.sifu
+│   ├── stage.microsoft.sifu
+│   └── stage.skype.sifu
 ├── qa
-│   ├── qa.defaults.sifu
-│   └── deployments
-│       ├── qa.qa01.sifu
-│       ├── qa.qa02.sifu
-│       └── qa.qa03.sifu
+│   ├── _qa.defaults.sifu
+│   ├── qa.qa01.sifu
+│   ├── qa.qa02.sifu
+│   └── qa.qa03.sifu
 └── dev
-    ├── dev.defaults.sifu
-    └── deployments
-        ├── dev.adam.sifu
-        ├── dev.matt.sifu
-        └── dev.tony.sifu
+    ├── _dev.defaults.sifu
+    ├── dev.adam.sifu
+    ├── dev.matt.sifu
+    └── dev.tony.sifu
 ```
 
 ```
@@ -50,7 +46,7 @@ final enable.featureX = true
 final es.index.name = "idx_hello"
 
 // These configs are required to be defined in sub configs
-abstract phase
+required phase = string
 
 // Define a secret config
 secret mysql_password = "mysql_password_for_user1"
@@ -65,8 +61,6 @@ override port = 8090
 override featureY.enable = true
 // Finalize an override
 final override featureY.scaling_factor = 0.6
-
-// Don't need to declare override for abstract overrides
-final phase = prod // Also finalize the config
+final override phase = "prod"
 
 ```

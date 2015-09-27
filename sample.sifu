@@ -1,0 +1,30 @@
+// This is a comment
+// This is how you set a config
+port = 8080 // integer
+feature_y.enable = false // boolean
+feature_y.scaling_factor = 0.5 // float
+feature_y.display_name = "Awesome Feature" // String
+
+hosts = ["host1", "host2", "host3"] // Lists
+
+multiline_list = [
+ "e1",
+ "e2",
+ "e3"
+] // Multiline lists
+
+// These configs cannot be overridden
+final enable.feature_x = true
+final es.index.name = "idx_hello"
+
+// These configs are required to be defined in sub configs
+required phase = string
+
+// Must declare that you're overriding a config
+override port = 8090
+override featureY.enable = true
+// Finalize an override
+final override featureY.scaling_factor = 0.6
+
+// Don't need to declare override for abstract overrides
+final phase = "prod" // Also finalize the config
