@@ -232,7 +232,7 @@ func lexKeyword(l *Lexer) stateFn {
 
 func lexVariableName(l *Lexer) stateFn {
   l.consumeSpaces()
-  l.acceptRun("abcdefghijklmnopqrstuvwxyz01234567890_.")
+  l.acceptRun("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.")
   if l.peek() != ' ' {
     return l.errorf("A variable name must be terminated with a space. " +
        "Encountered '%s'", string(l.peek()))

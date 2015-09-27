@@ -1,9 +1,9 @@
 // This is a comment
 // This is how you set a config
 port = 8080 // integer
-feature_y.enable = false // boolean
-feature_y.scaling_factor = 0.5 // float
-feature_y.display_name = "Awesome Feature" // String
+featureY.enable = false // boolean
+featureY.scaling_factor = 0.5 // float
+featureY.display_name = "Awesome Feature" // String
 
 hosts = ["host1", "host2", "host3"] // Lists
 
