@@ -1,3 +1,7 @@
+SifuConf
+========
+[![Build Status](https://travis-ci.org/pradeepg26/sifuconf.svg?branch=master)]
+
 ```
 .
 ├── _defaults.sifu
