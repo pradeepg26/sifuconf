@@ -218,141 +218,141 @@ func TestQuotesInStringValue(t *testing.T) {
 }
 
 func TestSingleLineListInts(t *testing.T) {
-    t.Parallel()
-    assert := assert.New(t)
+  t.Parallel()
+  assert := assert.New(t)
 
-    l := Lex("TestSingleLineListInts", "list = [1, 2, 3, 4]")
+  l := Lex("TestSingleLineListInts", "list = [1, 2, 3, 4]")
 
-    token := <-l.Items
-    assert.Equal(VARIABLE, token.ItemType)
-    assert.Equal("list", token.ItemValue)
+  token := <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("list", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(ASSIGNMENT, token.ItemType)
-    assert.Equal("=", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(LIST_START, token.ItemType)
-    assert.Equal("[", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(LIST_START, token.ItemType)
+  assert.Equal("[", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("1", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(NUMBER, token.ItemType)
+  assert.Equal("1", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("2", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(NUMBER, token.ItemType)
+  assert.Equal("2", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("3", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(NUMBER, token.ItemType)
+  assert.Equal("3", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("4", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(NUMBER, token.ItemType)
+  assert.Equal("4", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(LIST_END, token.ItemType)
-    assert.Equal("]", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(LIST_END, token.ItemType)
+  assert.Equal("]", token.ItemValue)
 
-    noMoreTokens(t, l)
+  noMoreTokens(t, l)
 }
 
 func TestSingleLineListStrings(t *testing.T) {
-    t.Parallel()
-    assert := assert.New(t)
+  t.Parallel()
+  assert := assert.New(t)
 
-    l := Lex("TestSingleLineListStrings", `list = ["12", "23", "34", "45"]`)
+  l := Lex("TestSingleLineListStrings", `list = ["12", "23", "34", "45"]`)
 
-    token := <-l.Items
-    assert.Equal(VARIABLE, token.ItemType)
-    assert.Equal("list", token.ItemValue)
+  token := <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("list", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(ASSIGNMENT, token.ItemType)
-    assert.Equal("=", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(LIST_START, token.ItemType)
-    assert.Equal("[", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(LIST_START, token.ItemType)
+  assert.Equal("[", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(STRING, token.ItemType)
-    assert.Equal(`"12"`, token.ItemValue)
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"12"`, token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(STRING, token.ItemType)
-    assert.Equal(`"23"`, token.ItemValue)
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"23"`, token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(STRING, token.ItemType)
-    assert.Equal(`"34"`, token.ItemValue)
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"34"`, token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(STRING, token.ItemType)
-    assert.Equal(`"45"`, token.ItemValue)
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"45"`, token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(LIST_END, token.ItemType)
-    assert.Equal("]", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(LIST_END, token.ItemType)
+  assert.Equal("]", token.ItemValue)
 
-    noMoreTokens(t, l)
+  noMoreTokens(t, l)
 }
 
 func TestUnterminatedString(t *testing.T) {
-    t.Parallel()
-    assert := assert.New(t)
+  t.Parallel()
+  assert := assert.New(t)
 
-    l := Lex("TestUnterminatedString", `hello = "unterminated string`)
+  l := Lex("TestUnterminatedString", `hello = "unterminated string`)
 
-    token := <-l.Items
-    assert.Equal(VARIABLE, token.ItemType)
-    assert.Equal("hello", token.ItemValue)
+  token := <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("hello", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(ASSIGNMENT, token.ItemType)
-    assert.Equal("=", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(ERROR, token.ItemType)
+  token = <-l.Items
+  assert.Equal(ERROR, token.ItemType)
 
-    noMoreTokens(t, l)
+  noMoreTokens(t, l)
 }
 
 func TestEmptyLines(t *testing.T) {
-    t.Parallel()
-    assert := assert.New(t)
+  t.Parallel()
+  assert := assert.New(t)
 
-    l := Lex("TestEmptyLines", `hello = "string"
+  l := Lex("TestEmptyLines", `hello = "string"
 
-      whosits = 1234
-      `)
+    whosits = 1234
+  `)
 
-    token := <-l.Items
-    assert.Equal(VARIABLE, token.ItemType)
-    assert.Equal("hello", token.ItemValue)
+  token := <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("hello", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(ASSIGNMENT, token.ItemType)
-    assert.Equal("=", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(STRING, token.ItemType)
-    assert.Equal(`"string"`, token.ItemValue)
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"string"`, token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(VARIABLE, token.ItemType)
-    assert.Equal("whosits", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("whosits", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(ASSIGNMENT, token.ItemType)
-    assert.Equal("=", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
 
-    token = <-l.Items
-    assert.Equal(NUMBER, token.ItemType)
-    assert.Equal("1234", token.ItemValue)
+  token = <-l.Items
+  assert.Equal(NUMBER, token.ItemType)
+  assert.Equal("1234", token.ItemValue)
 
-    noMoreTokens(t, l)
+  noMoreTokens(t, l)
 }
 
 func TestCommentOnly(t *testing.T) {
