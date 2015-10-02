@@ -369,6 +369,7 @@ func lexListElement(l *Lexer) stateFn {
   l.consumeSpaces()
   switch r := l.next(); {
   case r == '"':
+      l.backup()
       if l.scanString() {
         l.emit(STRING)
         return lexPostListElement

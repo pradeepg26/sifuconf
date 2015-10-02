@@ -217,11 +217,11 @@ func TestQuotesInStringValue(t *testing.T) {
   noMoreTokens(t, l)
 }
 
-func TestSingleLineList(t *testing.T) {
+func TestSingleLineListInts(t *testing.T) {
     t.Parallel()
     assert := assert.New(t)
 
-    l := Lex("TestSingleLineList", "list = [1, 2, 3, 4]")
+    l := Lex("TestSingleLineListInts", "list = [1, 2, 3, 4]")
 
     token := <-l.Items
     assert.Equal(VARIABLE, token.ItemType)
@@ -250,6 +250,47 @@ func TestSingleLineList(t *testing.T) {
     token = <-l.Items
     assert.Equal(NUMBER, token.ItemType)
     assert.Equal("4", token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(LIST_END, token.ItemType)
+    assert.Equal("]", token.ItemValue)
+
+    noMoreTokens(t, l)
+}
+
+func TestSingleLineListStrings(t *testing.T) {
+    t.Parallel()
+    assert := assert.New(t)
+
+    l := Lex("TestSingleLineListStrings", `list = ["12", "23", "34", "45"]`)
+
+    token := <-l.Items
+    assert.Equal(VARIABLE, token.ItemType)
+    assert.Equal("list", token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(ASSIGNMENT, token.ItemType)
+    assert.Equal("=", token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(LIST_START, token.ItemType)
+    assert.Equal("[", token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(STRING, token.ItemType)
+    assert.Equal(`"12"`, token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(STRING, token.ItemType)
+    assert.Equal(`"23"`, token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(STRING, token.ItemType)
+    assert.Equal(`"34"`, token.ItemValue)
+
+    token = <-l.Items
+    assert.Equal(STRING, token.ItemType)
+    assert.Equal(`"45"`, token.ItemValue)
 
     token = <-l.Items
     assert.Equal(LIST_END, token.ItemType)
