@@ -361,7 +361,7 @@ func lexList(l *Lexer) stateFn {
     l.errorf("Unexpected character. Expecting LIST_START")
   }
   l.emit(LIST_START)
-
+  l.accept("\r\n")
   return lexListElement
 }
 
@@ -387,25 +387,34 @@ func lexListElement(l *Lexer) stateFn {
         l.emit(NUMBER)
         return lexPostListElement
       }
-      return l.errorf("Invalid number character")
+      return l.errorf("Invalid character '%s'@(%d)", string(r), l.Pos)
     default:
-      return l.errorf("Illegal character")
+      return l.errorf("Illegal character '%s'@(%d)", string(r), l.Pos)
   }
 }
 
 func lexPostListElement(l *Lexer) stateFn {
   l.consumeSpaces()
+
+  commaSeen := l.accept(",")
+
+  l.consumeSpaces()
+  if l.scanComment() {
+    l.emit(COMMENT)
+  }
+  l.consumeNewlinesAndSpaces()
+
   // List has been closed
   if l.accept("]") {
     l.emit(LIST_END)
     return lexPostValue
   }
 
-  if !l.accept(",") {
-    return l.errorf("List elements must be terminated by a comma ','")
+  if commaSeen {
+    return lexListElement
+  } else {
+    return l.errorf("List elements must be terminated by a comma")
   }
-
-  return lexListElement
 }
 
 func lexPostValue(l *Lexer) stateFn {
@@ -441,6 +450,12 @@ func (l *Lexer) scanComment() bool {
 func (l *Lexer) consumeSpaces() {
   for isSpace(l.next()) {
   }
+  l.backup()
+  l.ignore()
+}
+
+func (l *Lexer) consumeNewlinesAndSpaces() {
+  for r := l.next(); isSpace(r) || isEndOfLine(r); r = l.next() {}
   l.backup()
   l.ignore()
 }
