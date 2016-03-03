@@ -295,8 +295,21 @@ func (l *Lexer) scanBoolean() bool {
 }
 
 func lexTypeValue(l *Lexer) stateFn {
-  // types := []string{"string", "integer", "float", "boolean"}
-  return lexPostValue
+  types := []string{"string", "integer", "float", "boolean"}
+  for _, typ := range types {
+    if strings.HasPrefix(l.Input[l.Pos:], typ) {
+      l.Pos += len(typ)
+
+      if isAlphaNumeric(l.peek()) {
+        // After a type, next character must not be an alphanumeric
+        return l.errorf("Unexpected value. Expecting a type of a value")
+      }
+
+      l.emit(TYPE)
+      return lexPostValue
+    }
+  }
+  return l.errorf("Unexpected value. Expecting a type of a value")
 }
 
 // lexString scans a quoted string.

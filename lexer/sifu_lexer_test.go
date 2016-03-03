@@ -1,14 +1,13 @@
 package lexer
 
 import (
-  // "fmt"
   "testing"
   "github.com/stretchr/testify/assert"
 )
 
 func noMoreTokens(t *testing.T, l *Lexer) {
   for tok := range l.Items {
-    t.Errorf("Unexpected token received '%s'", tok)
+    t.Errorf("Unexpected token received %s", tok)
   }
 }
 
@@ -29,6 +28,26 @@ func TestAssignBoolean(t *testing.T) {
   token = <-l.Items
   assert.Equal(BOOLEAN, token.ItemType)
   assert.Equal("true", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestAssignBadBoolean(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestAssignBadBoolean", `hello = truetrue`)
+
+  token := <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("hello", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ERROR, token.ItemType)
 
   noMoreTokens(t, l)
 }
@@ -620,6 +639,159 @@ func TestCommentOnly(t *testing.T) {
   token := <-l.Items
   assert.Equal(COMMENT, token.ItemType)
   assert.Equal("// hello world", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestStringTypeAssignment(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestStringTypeAssignment", "required phase = string")
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("required", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("phase", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(TYPE, token.ItemType)
+  assert.Equal("string", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestStringTypeAssignmentComment(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestStringTypeAssignmentComment", "required phase = string // hello")
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("required", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("phase", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(TYPE, token.ItemType)
+  assert.Equal("string", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(COMMENT, token.ItemType)
+  assert.Equal("// hello", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestIntegerTypeAssignment(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestIntegerTypeAssignment", "required phase = integer")
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("required", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("phase", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(TYPE, token.ItemType)
+  assert.Equal("integer", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestFloatTypeAssignment(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestFloatTypeAssignment", "required phase = float")
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("required", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("phase", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(TYPE, token.ItemType)
+  assert.Equal("float", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestBooleanTypeAssignment(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestBooleanTypeAssignment", "required phase = boolean")
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("required", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("phase", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(TYPE, token.ItemType)
+  assert.Equal("boolean", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestBadTypeAssignment(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestBadTypeAssignment", "required phase = booleantype")
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("required", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("phase", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ASSIGNMENT, token.ItemType)
+  assert.Equal("=", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(ERROR, token.ItemType)
 
   noMoreTokens(t, l)
 }
