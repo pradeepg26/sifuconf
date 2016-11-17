@@ -1,6 +1,6 @@
 SifuConf
 ========
-![Build Status](https://travis-ci.org/pradeepg26/sifuconf.svg?branch=master)[![CircleCI](https://circleci.com/gh/pradeepg26/sifuconf.svg?style=svg)](https://circleci.com/gh/pradeepg26/sifuconf)
+![Build Status](https://travis-ci.org/pradeepg26/sifuconf.svg?branch=master) [![CircleCI](https://circleci.com/gh/pradeepg26/sifuconf.svg?style=svg)](https://circleci.com/gh/pradeepg26/sifuconf)
 
 ```
 .
