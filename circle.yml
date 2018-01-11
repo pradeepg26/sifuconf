@@ -7,4 +7,6 @@ test:
     #- go test -v -race -coverprofile=coverage.txt -covermode=atomic
     - ./go.test.sh
   post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
     - bash <(curl -s https://codecov.io/bash)
