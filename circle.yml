@@ -1,12 +1,12 @@
 test:
   pre:
+    - npm install -g junit-merge
     - go vet ./...
     - go get github.com/jstemmer/go-junit-report
   override:
-    #- go test -v ./... | go-junit-report > $CIRCLE_TEST_REPORTS/report.xml
-    #- go test -v -race -coverprofile=coverage.txt -covermode=atomic
     - ./go.test.sh
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - junit-merge -o $CIRCLE_TEST_REPORTS/report.xml $CIRCLE_TEST_REPORTS/junit/*.xml
     - bash <(curl -s https://codecov.io/bash)
