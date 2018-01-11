@@ -5,6 +5,6 @@ test:
   override:
     #- go test -v ./... | go-junit-report > $CIRCLE_TEST_REPORTS/report.xml
     #- go test -v -race -coverprofile=coverage.txt -covermode=atomic
-    - go.test.sh
+    - ./go.test.sh
   post:
     - bash <(curl -s https://codecov.io/bash)
