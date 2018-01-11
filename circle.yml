@@ -4,3 +4,5 @@ test:
     - go get github.com/jstemmer/go-junit-report
   override:
     - go test -v ./... | go-junit-report > $CIRCLE_TEST_REPORTS/report.xml
+  post:
+    - bash <(curl -s https://codecov.io/bash)
