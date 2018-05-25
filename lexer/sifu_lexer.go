@@ -3,6 +3,7 @@ package lexer
 import (
   "fmt"
   "strings"
+  "strconv"
   "unicode"
   "unicode/utf8"
 )
@@ -204,7 +205,7 @@ func lexLine(l *Lexer) stateFn {
 func lexKeyword(l *Lexer) stateFn {
   l.consumeSpaces()
 
-  keywords := []string{"final", "override", "required"}
+  keywords := []string{"final", "override", "required", "import"}
   if !l.accept("abcdefghijklmnopqrstuvwxyz") {
     // Keywords and Variable names must start with a letter
     return l.errorf("Illegal character encountered. " +
@@ -222,6 +223,10 @@ func lexKeyword(l *Lexer) stateFn {
         return lexVariableName
       }
       l.emit(KEYWORD)
+      if (k == "import") {
+        fmt.Println("Encountered 'import' directive")
+        return lexImport
+      }
       return lexKeyword
     }
   }
@@ -230,12 +235,32 @@ func lexKeyword(l *Lexer) stateFn {
   return lexVariableName
 }
 
+func lexImport(l *Lexer) stateFn {
+  l.consumeSpaces()
+  if l.scanString() {
+    // scan a service name
+    l.emit(STRING)
+
+    l.consumeSpaces()
+    l.acceptRun("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.")
+    if r := l.peek(); r != ' ' && !isEndOfLine(r) && r != eof {
+      return l.errorf("A variable blah name must be terminated with a space. " +
+        "Encountered %s %v", strconv.QuoteRune(r), r)
+    }
+    l.emit(VARIABLE)
+    return lexPostValue
+  }
+  return l.errorf("'import' must be followed by a string in quotes. " +
+      "Encountered '%s'", string(l.Input[l.Pos:l.Pos+10]))
+
+}
+
 func lexVariableName(l *Lexer) stateFn {
   l.consumeSpaces()
   l.acceptRun("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.")
   if l.peek() != ' ' {
     return l.errorf("A variable name must be terminated with a space. " +
-       "Encountered '%s'", string(l.peek()))
+       "Encountered %s", strconv.QuoteRune(l.peek()))
   }
   l.emit(VARIABLE)
   return lexAssign

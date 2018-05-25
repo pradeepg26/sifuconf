@@ -795,3 +795,70 @@ func TestBadTypeAssignment(t *testing.T) {
 
   noMoreTokens(t, l)
 }
+
+func TestImportLocal(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestImportLocal", `import "service_a/prod" _`)
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("import", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"service_a/prod"`, token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("_", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestImportAs(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestImportAs", `import "service_a/prod" blah`)
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("import", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"service_a/prod"`, token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("blah", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
+
+func TestCommentAfterImport(t *testing.T) {
+  t.Parallel()
+  assert := assert.New(t)
+
+  l := Lex("TestImportAs", `import "service_a/prod" blah // comment`)
+
+  token := <-l.Items
+  assert.Equal(KEYWORD, token.ItemType)
+  assert.Equal("import", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(STRING, token.ItemType)
+  assert.Equal(`"service_a/prod"`, token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(VARIABLE, token.ItemType)
+  assert.Equal("blah", token.ItemValue)
+
+  token = <-l.Items
+  assert.Equal(COMMENT, token.ItemType)
+  assert.Equal("// comment", token.ItemValue)
+
+  noMoreTokens(t, l)
+}
